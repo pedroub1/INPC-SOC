@@ -1,6 +1,6 @@
 """
-Pre-calcula los ordenes ARIMA y SARIMA para cada serie del INPC
-usando los ultimos N periodos. Guarda resultados en data/model_orders.json.
+Pre-calcula los órdenes ARIMA y SARIMA para cada serie del INPC
+usando los últimos N períodos. Guarda resultados en data/model_orders.json.
 
 Ejecutar manualmente cuando se quiera recalibrar:
     python fit_orders.py
@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(__file__)
 
 
 def fit_series(name, values, index_str, freq, m):
-    """Ajusta auto_arima (ARIMA y SARIMA) sobre una serie y devuelve los ordenes."""
+    """Ajusta auto_arima (ARIMA y SARIMA) sobre una serie y devuelve los órdenes."""
     idx = pd.DatetimeIndex(index_str)
     if freq is not None:
         idx.freq = freq
@@ -45,7 +45,7 @@ def fit_series(name, values, index_str, freq, m):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Pre-calcula ordenes ARIMA/SARIMA")
+    parser = argparse.ArgumentParser(description="Pre-calcula órdenes ARIMA/SARIMA")
     parser.add_argument("--quincenal", action="store_true",
                         help="Usar series quincenales en lugar de mensuales")
     args = parser.parse_args()
@@ -71,7 +71,7 @@ def main():
 
     results = {}
     series_names = df.columns.tolist()
-    print(f"Ajustando {len(series_names)} series (ultimos {n_periods} {label}, m={m})...\n")
+    print(f"Ajustando {len(series_names)} series (últimos {n_periods} {label}, m={m})...\n")
 
     start = time.time()
 

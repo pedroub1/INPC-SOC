@@ -7,14 +7,14 @@ from data_loader import (fetch_from_banxico, load_data, fetch_from_banxico_q, lo
 
 st.set_page_config(page_title="Dashboard INPC", layout="wide")
 
-# --- Sidebar comun ---
-st.sidebar.header("Configuracion")
+# --- Sidebar común ---
+st.sidebar.header("Configuración")
 
 frecuencia = st.sidebar.radio("Frecuencia", ["Mensual", "Quincenal"])
 is_q = (frecuencia == "Quincenal")
 PERIOD = 24 if is_q else 12
 HORIZON = 24 if is_q else 12
-FREQ = None if is_q else "MS"  # quincenal (1o y 16) no tiene freq estandar en pandas
+FREQ = None if is_q else "MS"  # quincenal (1o y 16) no tiene freq estándar en pandas
 N_LAGS_NN = 48 if is_q else 24
 N_FEATURES_NN = N_LAGS_NN + 2
 var_period_label = "Quincenal" if is_q else "Mensual"
@@ -22,7 +22,7 @@ var_short = "q" if is_q else "m"  # para columnas de tablas: Var.q / Var.m
 
 
 def _next_q_dates(last_date, n):
-    """Genera n fechas quincenales (1 y 16 de cada mes) despues de last_date."""
+    """Genera n fechas quincenales (1 y 16 de cada mes) después de last_date."""
     dates = []
     y, m, d = last_date.year, last_date.month, last_date.day
     for _ in range(n):
@@ -39,7 +39,7 @@ def _next_q_dates(last_date, n):
 
 
 def _make_idx(index_str):
-    """Crea DatetimeIndex, asignando freq solo si es mensual."""
+    """Crea DatetimeIndex, asignando freq sólo si es mensual."""
     idx = pd.DatetimeIndex(index_str)
     if FREQ is not None:
         idx.freq = FREQ
@@ -47,7 +47,7 @@ def _make_idx(index_str):
 
 
 def _set_freq(serie):
-    """Asigna freq al indice solo si es mensual."""
+    """Asigna freq al índice sólo si es mensual."""
     if FREQ is not None:
         serie.index.freq = FREQ
 
@@ -71,13 +71,13 @@ if st.sidebar.button("Actualizar datos desde Banxico"):
                 df = fetch_from_banxico_q()
             else:
                 df = fetch_from_banxico()
-            st.sidebar.success(f"Datos actualizados. Ultimo: {_fmt_date(df.index.max())}")
+            st.sidebar.success(f"Datos actualizados. Último: {_fmt_date(df.index.max())}")
             st.cache_data.clear()
         except Exception as e:
             st.sidebar.error(f"Error al descargar: {e}")
 
-# --- Navegacion ---
-pagina = st.sidebar.radio("Pagina", ["Serie Original", "Ajuste Estacional", "Pronosticos", "Redes Neuronales", "Manual"])
+# --- Navegación ---
+pagina = st.sidebar.radio("Página", ["Serie Original", "Ajuste Estacional", "Pronósticos", "Redes Neuronales", "Manual"])
 
 # Cargar datos
 df = load_data_q() if is_q else load_data()
@@ -86,7 +86,7 @@ if df is None:
     st.info("No hay datos guardados. Haz clic en 'Actualizar datos desde Banxico' en el sidebar.")
     st.stop()
 
-st.title("Analisis de la Inflacion")
+st.title("Análisis de la Inflación")
 
 serie = st.sidebar.selectbox("Serie", df.columns.tolist())
 
@@ -101,7 +101,7 @@ rango = st.sidebar.slider(
     format="YYYY-MM",
 )
 
-st.sidebar.caption(f"Ultimo dato: {_fmt_date(max_date)}")
+st.sidebar.caption(f"Último dato: {_fmt_date(max_date)}")
 
 
 # ============================================================
@@ -124,13 +124,13 @@ if pagina == "Serie Original":
     with col1:
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=datos.index, y=datos.values, mode="lines", name=serie))
-        fig.update_layout(title=f"{serie} (Nivel)", yaxis_title="Indice", template="plotly_white")
+        fig.update_layout(title=f"{serie} (Nivel)", yaxis_title="Índice", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=var_anual.index, y=var_anual.values, mode="lines", name="Var. Anual %", line=dict(color="crimson")))
-        fig.update_layout(title=f"{serie} - Variacion Anual (%)", yaxis_title="%", template="plotly_white")
+        fig.update_layout(title=f"{serie} - Variación Anual (%)", yaxis_title="%", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     col3, col4 = st.columns(2)
@@ -138,7 +138,7 @@ if pagina == "Serie Original":
     with col3:
         fig = go.Figure()
         fig.add_trace(go.Bar(x=var_mensual.index, y=var_mensual.values, name=f"Var. {var_period_label} %", marker_color="steelblue"))
-        fig.update_layout(title=f"{serie} - Variacion {var_period_label} (%)", yaxis_title="%", template="plotly_white")
+        fig.update_layout(title=f"{serie} - Variación {var_period_label} (%)", yaxis_title="%", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     with col4:
@@ -147,13 +147,13 @@ if pagina == "Serie Original":
         fecha_ultimo = _fmt_date(datos.index[-1])
         ponderador = PONDERADORES.get(serie, None)
         resumen = {
-            "Ultimo dato": f"{ultimo:.4f}",
+            "Último dato": f"{ultimo:.4f}",
             "Fecha": fecha_ultimo,
             "Ponderador (%)": f"{ponderador:.4f}" if ponderador is not None else "N/A",
             f"Var. {var_period_label} (%)": f"{var_mensual.iloc[-1]:.2f}" if len(var_mensual) > 0 else "N/A",
             "Var. Anual (%)": f"{var_anual.iloc[-1]:.2f}" if len(var_anual) > 0 else "N/A",
-            "Max historico": f"{datos.max():.4f}",
-            "Min en rango": f"{datos.min():.4f}",
+            "Máx histórico": f"{datos.max():.4f}",
+            "Mín en rango": f"{datos.min():.4f}",
         }
         for k, v in resumen.items():
             st.metric(k, v)
@@ -186,7 +186,7 @@ elif pagina == "Ajuste Estacional":
     from statsmodels.tsa.seasonal import STL
 
     st.header("INPC - Ajuste Estacional (STL)")
-    st.caption(f"Descomposicion Seasonal-Trend usando LOESS (STL) con periodo={PERIOD}")
+    st.caption(f"Descomposición Seasonal-Trend usando LOESS (STL) con periodo={PERIOD}")
 
     # STL necesita frecuencia definida y sin NaN
     serie_completa = df[serie].dropna()
@@ -222,7 +222,7 @@ elif pagina == "Ajuste Estacional":
     vm_sa = var_mensual_sa[mask_range].dropna()
     va_sa = var_anual_sa[mask_range].dropna()
 
-    # --- Graficas ---
+    # --- Gráficas ---
     # 1. Original vs Desestacionalizada vs Tendencia
     col1, col2 = st.columns(2)
 
@@ -231,13 +231,13 @@ elif pagina == "Ajuste Estacional":
         fig.add_trace(go.Scatter(x=datos_orig.index, y=datos_orig.values, mode="lines", name="Original", opacity=0.5))
         fig.add_trace(go.Scatter(x=datos_sa.index, y=datos_sa.values, mode="lines", name="Desestacionalizada", line=dict(color="darkorange")))
         fig.add_trace(go.Scatter(x=datos_trend.index, y=datos_trend.values, mode="lines", name="Tendencia", line=dict(color="green", dash="dash")))
-        fig.update_layout(title=f"{serie} - Original vs Desestacionalizada", yaxis_title="Indice", template="plotly_white")
+        fig.update_layout(title=f"{serie} - Original vs Desestacionalizada", yaxis_title="Índice", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=va_sa.index, y=va_sa.values, mode="lines", name="Var. Anual % (SA)", line=dict(color="crimson")))
-        fig.update_layout(title=f"{serie} SA - Variacion Anual (%)", yaxis_title="%", template="plotly_white")
+        fig.update_layout(title=f"{serie} SA - Variación Anual (%)", yaxis_title="%", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     col3, col4 = st.columns(2)
@@ -245,14 +245,14 @@ elif pagina == "Ajuste Estacional":
     with col3:
         fig = go.Figure()
         fig.add_trace(go.Bar(x=vm_sa.index, y=vm_sa.values, name=f"Var. {var_period_label} % (SA)", marker_color="darkorange"))
-        fig.update_layout(title=f"{serie} SA - Variacion {var_period_label} (%)", yaxis_title="%", template="plotly_white")
+        fig.update_layout(title=f"{serie} SA - Variación {var_period_label} (%)", yaxis_title="%", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     with col4:
         # Componente estacional
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=datos_seasonal.index, y=datos_seasonal.values, mode="lines", name="Comp. Estacional", line=dict(color="purple")))
-        fig.update_layout(title=f"{serie} - Componente Estacional", yaxis_title="Indice", template="plotly_white")
+        fig.update_layout(title=f"{serie} - Componente Estacional", yaxis_title="Índice", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     # Resumen: Original y Desestacionalizada
@@ -266,14 +266,14 @@ elif pagina == "Ajuste Estacional":
 
     with col_orig:
         st.markdown("**Serie Original**")
-        st.metric("Ultimo dato", f"{datos_orig.iloc[-1]:.4f}")
+        st.metric("Último dato", f"{datos_orig.iloc[-1]:.4f}")
         st.metric("Fecha", _fmt_date(datos_orig.index[-1]))
         st.metric(f"Var. {var_period_label} (%)", f"{vm_orig.iloc[-1]:.2f}" if len(vm_orig) > 0 else "N/A")
         st.metric("Var. Anual (%)", f"{va_orig.iloc[-1]:.2f}" if len(va_orig) > 0 else "N/A")
 
     with col_sa:
         st.markdown("**Serie Desestacionalizada**")
-        st.metric("Ultimo dato SA", f"{datos_sa.iloc[-1]:.4f}")
+        st.metric("Último dato SA", f"{datos_sa.iloc[-1]:.4f}")
         st.metric("Fecha", _fmt_date(datos_sa.index[-1]))
         st.metric(f"Var. {var_period_label} SA (%)", f"{vm_sa.iloc[-1]:.2f}" if len(vm_sa) > 0 else "N/A")
         st.metric("Var. Anual SA (%)", f"{va_sa.iloc[-1]:.2f}" if len(va_sa) > 0 else "N/A")
@@ -304,15 +304,15 @@ elif pagina == "Ajuste Estacional":
 
 
 # ============================================================
-# PAGINA 3: Pronosticos ARIMA / SARIMA
+# PÁGINA 3: Pronósticos ARIMA / SARIMA
 # ============================================================
-elif pagina == "Pronosticos":
+elif pagina == "Pronósticos":
     import json
     import numpy as np
     from statsmodels.tsa.statespace.sarimax import SARIMAX
 
-    st.header("INPC - Pronosticos ARIMA / SARIMA")
-    st.caption(f"Especificaciones pre-calibradas (ultimos {PERIOD * 4} periodos). "
+    st.header("INPC - Pronósticos ARIMA / SARIMA")
+    st.caption(f"Especificaciones pre-calibradas (últimos {PERIOD * 4} períodos). "
                "Se recomienda recalibrar anualmente. Comando: `python fit_orders.py" +
                (" --quincenal`" if is_q else "`"))
 
@@ -328,7 +328,7 @@ elif pagina == "Pronosticos":
         all_orders = json.load(f)
 
     if serie not in all_orders:
-        st.warning(f"No hay ordenes pre-calculados para '{serie}'. Ejecuta fit_orders.py.")
+        st.warning(f"No hay órdenes pre-calculados para '{serie}'. Ejecuta fit_orders.py.")
         st.stop()
 
     serie_completa = df[serie].dropna()
@@ -367,7 +367,7 @@ elif pagina == "Pronosticos":
         sarima_fc = sarima_pred.predicted_mean.values
         sarima_ci = sarima_pred.conf_int().values
 
-        # Generar indice de fechas del pronostico
+        # Generar índice de fechas del pronóstico
         last_date = s.index[-1]
         if quincenal:
             fc_idx = _next_q_dates(last_date, horizon)
@@ -384,7 +384,7 @@ elif pagina == "Pronosticos":
                 arima_resid, sarima_resid, arima_summary, sarima_summary)
 
     def _run_forecast(serie_name):
-        """Pronostica una serie usando sus ordenes pre-calculados."""
+        """Pronostica una serie usando sus órdenes pre-calculados."""
         ord_ = all_orders[serie_name]
         s = df[serie_name].dropna()
         _set_freq(s)
@@ -437,7 +437,7 @@ elif pagina == "Pronosticos":
             pond_fc_arima = pd.Series(pond_arima, index=fc_index)
             pond_fc_sarima = pd.Series(pond_sarima, index=fc_index)
 
-    # Info de ordenes
+    # Info de órdenes
     info_txt = (f"**ARIMA** orden: {arima_order}  |  "
                 f"**SARIMA** orden: {sarima_order} x {sarima_seasonal}")
     if pond_fc_arima is not None:
@@ -451,7 +451,7 @@ elif pagina == "Pronosticos":
     if is_q:
         var_mensual_hist_q = serie_completa.pct_change(2) * 100  # mensual dentro de quincenal
 
-    # --- Variaciones del pronostico ---
+    # --- Variaciones del pronóstico ---
     def calc_variations(forecast, serie_hist, fc_idx):
         combined = pd.concat([serie_hist.iloc[-1:], forecast])
         vp = combined.pct_change().iloc[1:] * 100   # var. periodo (q o m)
@@ -471,7 +471,7 @@ elif pagina == "Pronosticos":
         vp_pond_arima, va_pond_arima, vm_pond_arima = calc_variations(pond_fc_arima, serie_completa, fc_index)
         vp_pond_sarima, va_pond_sarima, vm_pond_sarima = calc_variations(pond_fc_sarima, serie_completa, fc_index)
 
-    # --- Filtrar historicos por rango (graficas) ---
+    # --- Filtrar históricos por rango (gráficas) ---
     rango_chart_arima = st.slider(
         "Rango de historia en graficas",
         min_value=min_date, max_value=max_date,
@@ -483,11 +483,11 @@ elif pagina == "Pronosticos":
     va_hist = var_anual_hist[mask_range].dropna()
     vp_hist = var_period_hist[mask_range].dropna()
 
-    # --- Grafica 1: Nivel historico + pronosticos ---
+    # --- Gráfica 1: Nivel histórico + pronósticos ---
     st.subheader("Nivel")
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=datos_hist.index, y=datos_hist.values,
-                             mode="lines", name="Historico"))
+                             mode="lines", name="Histórico"))
     # ARIMA forecast + CI
     fig.add_trace(go.Scatter(x=fc_index, y=arima_ci[:, 1], mode="lines",
                              line=dict(width=0), showlegend=False))
@@ -513,18 +513,18 @@ elif pagina == "Pronosticos":
         fig.add_trace(go.Scatter(x=fc_index, y=pond_fc_sarima.values,
                                  mode="lines+markers", name="Pond. SARIMA",
                                  line=dict(color="rgb(214,39,40)", dash="dot")))
-    fig.update_layout(title=f"{serie} - Nivel + Pronostico {HORIZON} periodos",
-                      yaxis_title="Indice", template="plotly_white")
+    fig.update_layout(title=f"{serie} - Nivel + Pronóstico {HORIZON} períodos",
+                      yaxis_title="Índice", template="plotly_white")
     st.plotly_chart(fig, use_container_width=True)
 
-    # --- Graficas de variaciones ---
+    # --- Gráficas de variaciones ---
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Variacion Anual (%)")
+        st.subheader("Variación Anual (%)")
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=va_hist.index, y=va_hist.values,
-                                 mode="lines", name="Historico", line=dict(color="crimson")))
+                                 mode="lines", name="Histórico", line=dict(color="crimson")))
         fig.add_trace(go.Scatter(x=fc_index, y=va_arima.values,
                                  mode="lines+markers", name="ARIMA",
                                  line=dict(color="rgb(31,119,180)", dash="dash")))
@@ -542,10 +542,10 @@ elif pagina == "Pronosticos":
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
-        st.subheader(f"Variacion {var_period_label} (%)")
+        st.subheader(f"Variación {var_period_label} (%)")
         fig = go.Figure()
         fig.add_trace(go.Bar(x=vp_hist.index, y=vp_hist.values,
-                             name="Historico", marker_color="steelblue"))
+                             name="Histórico", marker_color="steelblue"))
         fig.add_trace(go.Scatter(x=fc_index, y=vp_arima.values,
                                  mode="lines+markers", name="ARIMA",
                                  line=dict(color="rgb(31,119,180)", dash="dash")))
@@ -563,7 +563,7 @@ elif pagina == "Pronosticos":
         st.plotly_chart(fig, use_container_width=True)
 
     # --- Tabla de pronosticos ---
-    st.subheader("Tabla de Pronosticos")
+    st.subheader("Tabla de Pronósticos")
     n_hist_arima = st.slider("Periodos de historia a incluir", 0, 120, PERIOD,
                              key="hist_arima")
 
@@ -609,7 +609,7 @@ elif pagina == "Pronosticos":
             hist_rows["Var.a Pond.A (%)"] = var_anual_hist.reindex(hist_slice.index)
             hist_rows["Var.a Pond.S (%)"] = var_anual_hist.reindex(hist_slice.index)
 
-    # Construir parte pronostico
+    # Construir parte pronóstico
     tabla_data = {
         "Nivel ARIMA": arima_forecast.values,
         "Nivel SARIMA": sarima_forecast.values,
@@ -651,7 +651,7 @@ elif pagina == "Pronosticos":
         f"{serie.strip()}_pronostico_arima.csv", "text/csv", key="dl_arima",
     )
 
-    # --- Graficas de residuales (errores estandarizados) ---
+    # --- Gráficas de residuales (errores estandarizados) ---
     st.subheader("Residuales de los modelos")
 
     arima_std_resid = (arima_resid - np.mean(arima_resid)) / np.std(arima_resid)
@@ -669,7 +669,7 @@ elif pagina == "Pronosticos":
         fig.add_hline(y=2, line_dash="dot", line_color="red", opacity=0.5)
         fig.add_hline(y=-2, line_dash="dot", line_color="red", opacity=0.5)
         fig.update_layout(title=f"ARIMA {arima_order} - Residuales estandarizados",
-                          yaxis_title="Desv. estandar", template="plotly_white")
+                          yaxis_title="Desv. estándar", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     with col_r2:
@@ -682,7 +682,7 @@ elif pagina == "Pronosticos":
         fig.add_hline(y=2, line_dash="dot", line_color="red", opacity=0.5)
         fig.add_hline(y=-2, line_dash="dot", line_color="red", opacity=0.5)
         fig.update_layout(title=f"SARIMA {sarima_order}x{sarima_seasonal} - Residuales estandarizados",
-                          yaxis_title="Desv. estandar", template="plotly_white")
+                          yaxis_title="Desv. estándar", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     # Histogramas de residuales
@@ -693,7 +693,7 @@ elif pagina == "Pronosticos":
         fig.add_trace(go.Histogram(x=arima_std_resid, nbinsx=40,
                                    name="ARIMA", marker_color="rgb(31,119,180)", opacity=0.75))
         fig.update_layout(title=f"ARIMA {arima_order} - Distribucion de residuales",
-                          xaxis_title="Desv. estandar", yaxis_title="Frecuencia",
+                          xaxis_title="Desv. estándar", yaxis_title="Frecuencia",
                           template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
@@ -702,7 +702,7 @@ elif pagina == "Pronosticos":
         fig.add_trace(go.Histogram(x=sarima_std_resid, nbinsx=40,
                                    name="SARIMA", marker_color="rgb(255,127,14)", opacity=0.75))
         fig.update_layout(title=f"SARIMA {sarima_order}x{sarima_seasonal} - Distribucion de residuales",
-                          xaxis_title="Desv. estandar", yaxis_title="Frecuencia",
+                          xaxis_title="Desv. estándar", yaxis_title="Frecuencia",
                           template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
@@ -730,7 +730,7 @@ elif pagina == "Redes Neuronales":
     import torch
     import torch.nn as tnn
 
-    st.header("INPC - Pronosticos con Redes Neuronales")
+    st.header("INPC - Pronósticos con Redes Neuronales")
     st.caption("Modelos pre-entrenados (MLP + LSTM). "
                "Se recomienda recalibrar anualmente. Comando: `python fit_nn.py" +
                (" --quincenal`" if is_q else "`"))
@@ -791,7 +791,7 @@ elif pagina == "Redes Neuronales":
     # --- Recursive forecast ---
     def nn_recursive_forecast(model_type, model, scaler_X, scaler_y,
                               last_values, last_month, n_steps=HORIZON):
-        """Pronostico recursivo de n_steps usando ventana de N_LAGS rezagos."""
+        """Pronóstico recursivo de n_steps usando ventana de N_LAGS rezagos."""
         preds = []
         window = list(last_values[-N_LAGS:])
         for i in range(n_steps):
@@ -895,7 +895,7 @@ elif pagina == "Redes Neuronales":
     if is_q:
         var_mensual_hist_q = serie_completa.pct_change(2) * 100
 
-    # --- Variaciones del pronostico ---
+    # --- Variaciones del pronóstico ---
     def calc_variations(forecast, serie_hist, fc_idx):
         combined = pd.concat([serie_hist.iloc[-1:], forecast])
         vp = combined.pct_change().iloc[1:] * 100
@@ -914,7 +914,7 @@ elif pagina == "Redes Neuronales":
         vp_pond_mlp, va_pond_mlp, vm_pond_mlp = calc_variations(pond_fc_mlp, serie_completa, fc_index)
         vp_pond_lstm, va_pond_lstm, vm_pond_lstm = calc_variations(pond_fc_lstm, serie_completa, fc_index)
 
-    # --- Filtrar historicos por rango (graficas) ---
+    # --- Filtrar históricos por rango (gráficas) ---
     rango_chart_nn = st.slider(
         "Rango de historia en graficas",
         min_value=min_date, max_value=max_date,
@@ -926,11 +926,11 @@ elif pagina == "Redes Neuronales":
     va_hist = var_anual_hist[mask_range].dropna()
     vp_hist = var_period_hist[mask_range].dropna()
 
-    # --- Grafica 1: Nivel historico + pronosticos ---
+    # --- Gráfica 1: Nivel histórico + pronósticos ---
     st.subheader("Nivel")
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=datos_hist.index, y=datos_hist.values,
-                             mode="lines", name="Historico"))
+                             mode="lines", name="Histórico"))
     fig.add_trace(go.Scatter(x=fc_index, y=mlp_forecast.values,
                              mode="lines+markers", name="MLP",
                              line=dict(color="rgb(148,103,189)", dash="dash")))
@@ -944,18 +944,18 @@ elif pagina == "Redes Neuronales":
         fig.add_trace(go.Scatter(x=fc_index, y=pond_fc_lstm.values,
                                  mode="lines+markers", name="Pond. LSTM",
                                  line=dict(color="rgb(214,39,40)", dash="dot")))
-    fig.update_layout(title=f"{serie} - Nivel + Pronostico {HORIZON} periodos (Redes Neuronales)",
-                      yaxis_title="Indice", template="plotly_white")
+    fig.update_layout(title=f"{serie} - Nivel + Pronóstico {HORIZON} períodos (Redes Neuronales)",
+                      yaxis_title="Índice", template="plotly_white")
     st.plotly_chart(fig, use_container_width=True)
 
-    # --- Graficas de variaciones ---
+    # --- Gráficas de variaciones ---
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Variacion Anual (%)")
+        st.subheader("Variación Anual (%)")
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=va_hist.index, y=va_hist.values,
-                                 mode="lines", name="Historico", line=dict(color="crimson")))
+                                 mode="lines", name="Histórico", line=dict(color="crimson")))
         fig.add_trace(go.Scatter(x=fc_index, y=va_mlp.values,
                                  mode="lines+markers", name="MLP",
                                  line=dict(color="rgb(148,103,189)", dash="dash")))
@@ -973,10 +973,10 @@ elif pagina == "Redes Neuronales":
         st.plotly_chart(fig, use_container_width=True)
 
     with col2:
-        st.subheader(f"Variacion {var_period_label} (%)")
+        st.subheader(f"Variación {var_period_label} (%)")
         fig = go.Figure()
         fig.add_trace(go.Bar(x=vp_hist.index, y=vp_hist.values,
-                             name="Historico", marker_color="steelblue"))
+                             name="Histórico", marker_color="steelblue"))
         fig.add_trace(go.Scatter(x=fc_index, y=vp_mlp.values,
                                  mode="lines+markers", name="MLP",
                                  line=dict(color="rgb(148,103,189)", dash="dash")))
@@ -994,7 +994,7 @@ elif pagina == "Redes Neuronales":
         st.plotly_chart(fig, use_container_width=True)
 
     # --- Tabla de pronosticos ---
-    st.subheader("Tabla de Pronosticos")
+    st.subheader("Tabla de Pronósticos")
     n_hist_nn = st.slider("Periodos de historia a incluir", 0, 120, PERIOD,
                           key="hist_nn")
 
@@ -1040,7 +1040,7 @@ elif pagina == "Redes Neuronales":
             hist_rows_nn["Var.a Pond.M (%)"] = var_anual_hist.reindex(hist_slice_nn.index)
             hist_rows_nn["Var.a Pond.L (%)"] = var_anual_hist.reindex(hist_slice_nn.index)
 
-    # Construir parte pronostico
+    # Construir parte pronóstico
     tabla_data = {
         "Nivel MLP": mlp_forecast.values,
         "Nivel LSTM": lstm_forecast.values,
@@ -1141,7 +1141,7 @@ elif pagina == "Redes Neuronales":
         fig.add_hline(y=2, line_dash="dot", line_color="red", opacity=0.5)
         fig.add_hline(y=-2, line_dash="dot", line_color="red", opacity=0.5)
         fig.update_layout(title=f"MLP {cfg['mlp_params']['hidden_layer_sizes']} - Residuales estandarizados",
-                          yaxis_title="Desv. estandar", template="plotly_white")
+                          yaxis_title="Desv. estándar", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     with col_r2:
@@ -1153,7 +1153,7 @@ elif pagina == "Redes Neuronales":
         fig.add_hline(y=2, line_dash="dot", line_color="red", opacity=0.5)
         fig.add_hline(y=-2, line_dash="dot", line_color="red", opacity=0.5)
         fig.update_layout(title=f"LSTM({cfg['lstm_hidden_size']}) - Residuales estandarizados",
-                          yaxis_title="Desv. estandar", template="plotly_white")
+                          yaxis_title="Desv. estándar", template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
     # Histogramas de residuales
@@ -1164,7 +1164,7 @@ elif pagina == "Redes Neuronales":
         fig.add_trace(go.Histogram(x=mlp_std_resid, nbinsx=40,
                                    name="MLP", marker_color="rgb(148,103,189)", opacity=0.75))
         fig.update_layout(title=f"MLP {cfg['mlp_params']['hidden_layer_sizes']} - Distribucion de residuales",
-                          xaxis_title="Desv. estandar", yaxis_title="Frecuencia",
+                          xaxis_title="Desv. estándar", yaxis_title="Frecuencia",
                           template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
@@ -1173,7 +1173,7 @@ elif pagina == "Redes Neuronales":
         fig.add_trace(go.Histogram(x=lstm_std_resid, nbinsx=40,
                                    name="LSTM", marker_color="rgb(227,119,194)", opacity=0.75))
         fig.update_layout(title=f"LSTM({cfg['lstm_hidden_size']}) - Distribucion de residuales",
-                          xaxis_title="Desv. estandar", yaxis_title="Frecuencia",
+                          xaxis_title="Desv. estándar", yaxis_title="Frecuencia",
                           template="plotly_white")
         st.plotly_chart(fig, use_container_width=True)
 
@@ -1203,22 +1203,22 @@ elif pagina == "Redes Neuronales":
             f"Loss: MSELoss\n"
             f"Epochs: 100 (early stopping, patience=10)\n"
             f"Features: {N_LAGS} rezagos + sin(mes) + cos(mes) = {cfg['n_features']}\n"
-            f"Validation MSE (ultimos 12 meses): {cfg['lstm_val_mse']:.6f}\n"
+            f"Validation MSE (últimos 12 meses): {cfg['lstm_val_mse']:.6f}\n"
             f"Escalado: StandardScaler en X e y"
         )
         st.code(lstm_info, language=None)
 
 
 # ============================================================
-# PAGINA 5: Pronosticos Manuales
+# PÁGINA 5: Pronósticos Manuales
 # ============================================================
 elif pagina == "Manual":
     import json
     import numpy as np
     from statsmodels.tsa.statespace.sarimax import SARIMAX
 
-    st.header("Pronosticos Manuales")
-    st.caption(f"Edita directamente la variacion {var_period_label.lower()} (%) de cada subcomponente y observa como se propaga a los agregados")
+    st.header("Pronósticos Manuales")
+    st.caption(f"Edita directamente la variación {var_period_label.lower()} (%) de cada subcomponente y observa cómo se propaga a los agregados")
 
     # --- Paths y configs ---
     ORDERS_PATH = os.path.join(os.path.dirname(__file__), "data",
@@ -1250,7 +1250,7 @@ elif pagina == "Manual":
     # Hojas = subcomponentes de menor nivel (sin hijos en JERARQUIA)
     hojas = [col for col in COLUMN_ORDER if col not in JERARQUIA]
 
-    # --- Funciones de pronostico ---
+    # --- Funciones de pronóstico ---
     @st.cache_data
     def _forecast_arima_sarima(serie_name, values, index_str, orders_dict, quincenal):
         idx = pd.DatetimeIndex(index_str)
@@ -1355,7 +1355,7 @@ elif pagina == "Manual":
                                        periods=HORIZON, freq="MS")
             return {"MLP": mlp_fc, "LSTM": lstm_fc}, fc_idx.astype(str).tolist()
 
-    # --- Seleccion de modelo ---
+    # --- Selección de modelo ---
     st.subheader("1. Modelo base")
 
     modelo_global = st.selectbox("Modelo base (aplica a todos por defecto)",
@@ -1376,8 +1376,8 @@ elif pagina == "Manual":
         for hoja in hojas:
             modelos_por_hoja[hoja] = modelo_global
 
-    # --- Calcular pronosticos base de cada hoja ---
-    with st.spinner("Calculando pronosticos base..."):
+    # --- Calcular pronósticos base de cada hoja ---
+    with st.spinner("Calculando pronósticos base..."):
         base_forecasts = {}
         fc_index = None
 
@@ -1401,7 +1401,7 @@ elif pagina == "Manual":
                 st.warning(f"No hay modelo {modelo} para '{hoja.strip()}'. Ejecuta el script correspondiente.")
                 st.stop()
 
-    # --- Solo mes t+1: variacion mensual base de cada hoja ---
+    # --- Solo mes t+1: variación mensual base de cada hoja ---
     mes_pronostico = fc_index[0]
     mes_label = _fmt_date(mes_pronostico)
 
@@ -1424,7 +1424,7 @@ elif pagina == "Manual":
 
     st.button("Resetear drifts a 0", key="reset_drifts", on_click=_reset_drifts)
 
-    # Calcular ultimo dato de var. periodo y promedio historico de la misma quincena/mes
+    # Calcular último dato de var. periodo y promedio histórico de la misma quincena/mes
     mes_target = mes_pronostico.month
     dia_target = mes_pronostico.day
     ultimo_vm = {}
@@ -1442,7 +1442,7 @@ elif pagina == "Manual":
             vm_ultimo_10 = vm_mismo_mes[vm_mismo_mes.index.year >= (mes_pronostico.year - 10)]
         prom_mes_10a[nombre] = round(vm_ultimo_10.mean(), 4) if len(vm_ultimo_10) > 0 else np.nan
 
-    # Tabla de referencia (no editable): historico + modelo
+    # Tabla de referencia (no editable): histórico + modelo
     prom_label = f"Prom. {mes_pronostico.strftime('%b')}{(' Q' + str(1 if dia_target == 1 else 2)) if is_q else ''} 10a (%)"
     ref_t = pd.DataFrame({
         nombre: {
@@ -1511,7 +1511,7 @@ elif pagina == "Manual":
     aggregate_recursive("Indice General")
 
     # --- Tabla de resultados: todos los componentes ---
-    st.subheader("3. Pronostico agregado")
+    st.subheader("3. Pronóstico agregado")
 
     # Tambien calcular base_levels_12m para var. anual con misma formula
     base_levels_12m = {}

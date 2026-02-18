@@ -1,6 +1,6 @@
 """
 Pre-entrena modelos MLP (sklearn) y LSTM (PyTorch) para cada serie del INPC.
-Guarda modelos en data/nn_models/ y configuracion en data/nn_config.json.
+Guarda modelos en data/nn_models/ y configuración en data/nn_config.json.
 
 Ejecutar manualmente cuando se quiera recalibrar:
     python fit_nn.py
@@ -30,7 +30,7 @@ BASE_DIR = os.path.dirname(__file__)
 
 
 # ============================================================
-# Preparacion de datos
+# Preparación de datos
 # ============================================================
 
 def make_supervised(serie, n_lags, period):
@@ -141,7 +141,7 @@ def fit_lstm(serie, n_lags, period, val_size=12, epochs=100, batch_size=32, pati
             loss.backward()
             optimizer.step()
 
-        # Validacion
+        # Validación
         model.eval()
         with torch.no_grad():
             val_pred = model(X_val_t)
@@ -262,7 +262,7 @@ def main():
 
     with open(config_path, "w", encoding="utf-8") as f:
         json.dump(config, f, indent=2, ensure_ascii=False)
-    print(f"Configuracion guardada en {config_path}")
+    print(f"Configuración guardada en {config_path}")
 
 
 if __name__ == "__main__":
