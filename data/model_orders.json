@@ -1,0 +1,322 @@
+{
+  "Indice General": {
+    "arima_order": [
+      0,
+      1,
+      1
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      0,
+      1,
+      1
+    ],
+    "sarima_seasonal_order": [
+      0,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": true
+  },
+  "Subyacente": {
+    "arima_order": [
+      0,
+      2,
+      1
+    ],
+    "arima_intercept": false,
+    "sarima_order": [
+      1,
+      2,
+      0
+    ],
+    "sarima_seasonal_order": [
+      1,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": false
+  },
+  "    Alimentos Bebidas y Tabaco": {
+    "arima_order": [
+      0,
+      2,
+      0
+    ],
+    "arima_intercept": false,
+    "sarima_order": [
+      0,
+      2,
+      0
+    ],
+    "sarima_seasonal_order": [
+      1,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": false
+  },
+  "    Mercancias no Alimenticias": {
+    "arima_order": [
+      0,
+      2,
+      1
+    ],
+    "arima_intercept": false,
+    "sarima_order": [
+      0,
+      2,
+      1
+    ],
+    "sarima_seasonal_order": [
+      1,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": false
+  },
+  "  Mercancias": {
+    "arima_order": [
+      0,
+      2,
+      1
+    ],
+    "arima_intercept": false,
+    "sarima_order": [
+      0,
+      2,
+      1
+    ],
+    "sarima_seasonal_order": [
+      1,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": false
+  },
+  "    Educacion (colegiaturas)": {
+    "arima_order": [
+      0,
+      1,
+      1
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      0,
+      1,
+      0
+    ],
+    "sarima_seasonal_order": [
+      0,
+      1,
+      0,
+      12
+    ],
+    "sarima_intercept": false
+  },
+  "  Servicios": {
+    "arima_order": [
+      0,
+      1,
+      0
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      1,
+      1,
+      0
+    ],
+    "sarima_seasonal_order": [
+      1,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": true
+  },
+  "  Agropecuarios": {
+    "arima_order": [
+      0,
+      1,
+      0
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      0,
+      1,
+      0
+    ],
+    "sarima_seasonal_order": [
+      0,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": true
+  },
+  "No Subyacente": {
+    "arima_order": [
+      1,
+      1,
+      3
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      0,
+      1,
+      2
+    ],
+    "sarima_seasonal_order": [
+      1,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": true
+  },
+  "    Frutas y Verduras": {
+    "arima_order": [
+      1,
+      1,
+      3
+    ],
+    "arima_intercept": false,
+    "sarima_order": [
+      0,
+      1,
+      0
+    ],
+    "sarima_seasonal_order": [
+      0,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": false
+  },
+  "    Pecuarios": {
+    "arima_order": [
+      0,
+      1,
+      0
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      0,
+      1,
+      0
+    ],
+    "sarima_seasonal_order": [
+      0,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": true
+  },
+  "    Otros Servicios": {
+    "arima_order": [
+      0,
+      1,
+      0
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      1,
+      1,
+      1
+    ],
+    "sarima_seasonal_order": [
+      0,
+      1,
+      1,
+      12
+    ],
+    "sarima_intercept": false
+  },
+  "    Tarifas Aut. por el Gobierno": {
+    "arima_order": [
+      0,
+      1,
+      1
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      0,
+      1,
+      1
+    ],
+    "sarima_seasonal_order": [
+      0,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": true
+  },
+  "    Vivienda": {
+    "arima_order": [
+      0,
+      1,
+      1
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      1,
+      1,
+      0
+    ],
+    "sarima_seasonal_order": [
+      2,
+      0,
+      1,
+      12
+    ],
+    "sarima_intercept": true
+  },
+  "    Energeticos": {
+    "arima_order": [
+      1,
+      0,
+      1
+    ],
+    "arima_intercept": true,
+    "sarima_order": [
+      1,
+      0,
+      2
+    ],
+    "sarima_seasonal_order": [
+      1,
+      0,
+      0,
+      12
+    ],
+    "sarima_intercept": true
+  },
+  "  Energeticos y Tarifas Aut. Gob.": {
+    "arima_order": [
+      0,
+      1,
+      1
+    ],
+    "arima_intercept": false,
+    "sarima_order": [
+      2,
+      1,
+      0
+    ],
+    "sarima_seasonal_order": [
+      2,
+      0,
+      1,
+      12
+    ],
+    "sarima_intercept": false
+  }
+}

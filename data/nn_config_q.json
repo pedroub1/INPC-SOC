@@ -1,0 +1,253 @@
+{
+  "Indice General": {
+    "safe_name": "Indice_General",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.1,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.030678572146248504,
+    "lstm_val_mse": 0.00501562375575304,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "Subyacente": {
+    "safe_name": "Subyacente",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.001,
+      "hidden_layer_sizes": [
+        64
+      ]
+    },
+    "mlp_cv_mse": 0.01609056883070339,
+    "lstm_val_mse": 0.02366405725479126,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "  Mercancias": {
+    "safe_name": "Mercancias",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.001,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.03462435921595625,
+    "lstm_val_mse": 0.004687348380684853,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "    Alimentos Bebidas y Tabaco": {
+    "safe_name": "Alimentos_Bebidas_y_Tabaco",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.1,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.02871784841995541,
+    "lstm_val_mse": 0.010847040452063084,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "    Mercancias no Alimenticias": {
+    "safe_name": "Mercancias_no_Alimenticias",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.001,
+      "hidden_layer_sizes": [
+        64
+      ]
+    },
+    "mlp_cv_mse": 0.020099280799840035,
+    "lstm_val_mse": 0.0005069258040748537,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "  Servicios": {
+    "safe_name": "Servicios",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.01,
+      "hidden_layer_sizes": [
+        64
+      ]
+    },
+    "mlp_cv_mse": 0.009309003112536171,
+    "lstm_val_mse": 0.00029933569021523,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "    Vivienda": {
+    "safe_name": "Vivienda",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.001,
+      "hidden_layer_sizes": [
+        64
+      ]
+    },
+    "mlp_cv_mse": 0.009886352527899532,
+    "lstm_val_mse": 0.001628017402254045,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "    Educacion (colegiaturas)": {
+    "safe_name": "Educacion_(colegiaturas)",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.01,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.021493179053471523,
+    "lstm_val_mse": 0.002003998262807727,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "    Otros Servicios": {
+    "safe_name": "Otros_Servicios",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.001,
+      "hidden_layer_sizes": [
+        64
+      ]
+    },
+    "mlp_cv_mse": 0.01420306732664455,
+    "lstm_val_mse": 0.017209045588970184,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "No Subyacente": {
+    "safe_name": "No_Subyacente",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.1,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.023017150067706327,
+    "lstm_val_mse": 0.007143391761928797,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "  Agropecuarios": {
+    "safe_name": "Agropecuarios",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.01,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.02411130038826097,
+    "lstm_val_mse": 0.005084150470793247,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "    Frutas y Verduras": {
+    "safe_name": "Frutas_y_Verduras",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.1,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.03253028310630692,
+    "lstm_val_mse": 0.005683634430170059,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "    Pecuarios": {
+    "safe_name": "Pecuarios",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.1,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.02347288800765764,
+    "lstm_val_mse": 0.04841667041182518,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "  Energeticos y Tarifas Aut. Gob.": {
+    "safe_name": "Energeticos_y_Tarifas_Aut_Gob",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.1,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.0251038297819836,
+    "lstm_val_mse": 0.012296286411583424,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "    Energeticos": {
+    "safe_name": "Energeticos",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.001,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.03285886716667948,
+    "lstm_val_mse": 0.007594570517539978,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  },
+  "    Tarifas Aut. por el Gobierno": {
+    "safe_name": "Tarifas_Aut_por_el_Gobierno",
+    "n_lags": 48,
+    "n_features": 50,
+    "mlp_params": {
+      "alpha": 0.01,
+      "hidden_layer_sizes": [
+        64,
+        32
+      ]
+    },
+    "mlp_cv_mse": 0.030767437993788005,
+    "lstm_val_mse": 0.016007419675588608,
+    "lstm_hidden_size": 32,
+    "lstm_num_layers": 1
+  }
+}
