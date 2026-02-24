@@ -1,0 +1,30 @@
+{
+  "run_date": "2026-02-24T17:06:22.676917",
+  "series": [
+    "Indice General",
+    "Subyacente",
+    "Mercancias",
+    "Alimentos Bebidas y Tabaco",
+    "Mercancias no Alimenticias",
+    "Servicios",
+    "Vivienda",
+    "Educacion (colegiaturas)",
+    "Otros Servicios",
+    "No Subyacente",
+    "Agropecuarios",
+    "Frutas y Verduras",
+    "Pecuarios",
+    "Energeticos y Tarifas Aut. Gob.",
+    "Energeticos",
+    "Tarifas Aut. por el Gobierno"
+  ],
+  "horizons": [
+    1,
+    6,
+    12
+  ],
+  "oos_start": "2005-01-01",
+  "n_tasks": 48,
+  "n_ok": 48,
+  "n_error": 0
+}

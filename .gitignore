@@ -1,5 +1,17 @@
+# Secretos
 .env
-__pycache__/
+
+# Python
 *.pyc
-.streamlit/secrets.toml
-data/*.xlsx
+__pycache__/
+
+# Resultados computados (regenerar con fit_soc.py)
+data/soc_results/forecasts/
+data/soc_results/components/
+
+# Modelos neuronales binarios
+data/nn_models/
+
+# IDEs
+.vscode/
+.idea/
