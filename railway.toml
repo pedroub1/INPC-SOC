@@ -1,0 +1,8 @@
+[build]
+builder = "nixpacks"
+buildCommand = "pip install -r requirements_soc.txt"
+
+[deploy]
+startCommand = "gunicorn 'soc.dash_app:server' --bind 0.0.0.0:$PORT --workers 1 --timeout 120"
+healthcheckPath = "/"
+restartPolicyType = "on_failure"

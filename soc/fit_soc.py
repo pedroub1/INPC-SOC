@@ -235,17 +235,94 @@ def _process_one_safe(args):
 # ---------------------------------------------------------------------------
 
 def aggregate_metrics(all_results: list[dict]):
-    """Agrega métricas de todos los resultados y guarda all_metrics.parquet."""
+    """
+    Agrega métricas del run actual y las combina con resultados previos en
+    all_metrics.parquet. Las filas de las mismas (serie, h) se reemplazan;
+    el resto de series se conserva.
+    """
     rows = [r for r in all_results if r.get("status") == "ok"]
     if not rows:
         print("[fit_soc] Sin métricas para agregar.")
         return
-    df = pd.DataFrame(rows)
+    df_new = pd.DataFrame(rows)
     metrics_path = os.path.join(METRICS_DIR, "all_metrics.parquet")
-    df.to_parquet(metrics_path, index=False)
-    print(f"[fit_soc] Métricas guardadas: {metrics_path}")
-    print(df[["serie", "h", "ratio_SOC", "ratio_SOC_opt"]].to_string(index=False))
-    return df
+
+    # Combinar con métricas existentes sin sobreescribir otras series
+    if os.path.exists(metrics_path):
+        df_existing = pd.read_parquet(metrics_path)
+        current_keys = set(zip(df_new["serie"].astype(str), df_new["h"].astype(int)))
+        mask_keep = ~df_existing.apply(
+            lambda r: (str(r["serie"]), int(r["h"])) in current_keys, axis=1
+        )
+        df_combined = pd.concat([df_existing[mask_keep], df_new], ignore_index=True)
+    else:
+        df_combined = df_new
+
+    df_combined.to_parquet(metrics_path, index=False)
+    print(f"[fit_soc] Métricas guardadas: {metrics_path}  ({len(df_combined)} filas total)")
+    print(df_new[["serie", "h", "ratio_SOC", "ratio_SOC_opt"]].to_string(index=False))
+    return df_combined
+
+
+def rebuild_metrics_from_parquets(verbose: bool = True) -> pd.DataFrame:
+    """
+    Reconstruye all_metrics.parquet leyendo todos los archivos de pronóstico
+    existentes en FORECASTS_DIR. Util cuando el metrics file quedó incompleto
+    por corridas parciales.
+
+    Uso:  python -m soc.fit_soc --rebuild-metrics
+    """
+    from soc.config import INPC_SERIES_NAMES, SAFE_NAMES
+
+    rows = []
+    for serie_name in INPC_SERIES_NAMES:
+        safe = SAFE_NAMES.get(serie_name, serie_name.replace(" ", "_"))
+        for h in HORIZONS:
+            path = os.path.join(FORECASTS_DIR, f"{safe}_h{h}.parquet")
+            if not os.path.exists(path):
+                continue
+            try:
+                df = pd.read_parquet(path)
+                actual  = df["actual"].values.astype(float)
+                soc     = df["SOC"].values.astype(float)
+                soc_opt = df["SOC_opt"].values.astype(float)
+                ao      = df["AO"].values.astype(float)
+
+                def _rmse(a, f):
+                    mask = ~np.isnan(a) & ~np.isnan(f)
+                    return float(np.sqrt(np.mean((a[mask] - f[mask]) ** 2))) if mask.sum() > 0 else np.nan
+
+                r_ao  = _rmse(actual, ao)
+                r_soc = _rmse(actual, soc)
+                r_opt = _rmse(actual, soc_opt)
+
+                rows.append({
+                    "serie":         serie_name,
+                    "h":             h,
+                    "status":        "ok",
+                    "rmse_AO":       r_ao,
+                    "rmse_SOC":      r_soc,
+                    "rmse_SOC_opt":  r_opt,
+                    "ratio_SOC":     r_soc / r_ao if (r_ao and r_ao > 0) else np.nan,
+                    "ratio_SOC_opt": r_opt / r_ao if (r_ao and r_ao > 0) else np.nan,
+                    "n_oos":         len(df),
+                })
+                if verbose:
+                    print(f"  [ok] {serie_name} h={h}  ratio={rows[-1]['ratio_SOC']:.3f}")
+            except Exception as e:
+                if verbose:
+                    print(f"  [error] {serie_name} h={h}: {e}")
+
+    if not rows:
+        print("[rebuild] No se encontraron parquets de pronóstico.")
+        return pd.DataFrame()
+
+    df_out = pd.DataFrame(rows)
+    metrics_path = os.path.join(METRICS_DIR, "all_metrics.parquet")
+    df_out.to_parquet(metrics_path, index=False)
+    print(f"\n[rebuild] Listo: {len(df_out)} filas -> {metrics_path}")
+    print(df_out[["serie", "h", "ratio_SOC"]].to_string(index=False))
+    return df_out
 
 
 # ---------------------------------------------------------------------------
@@ -260,6 +337,8 @@ def parse_args():
     p.add_argument("--workers", type=int, default=2, help="Procesos paralelos")
     p.add_argument("--update-data", action="store_true",
                    help="Re-descarga macro_data.csv antes de correr")
+    p.add_argument("--rebuild-metrics", action="store_true",
+                   help="Reconstruye all_metrics.parquet desde los parquets existentes (sin re-estimar modelos)")
     return p.parse_args()
 
 
@@ -270,6 +349,13 @@ def main():
     print("SOC - Forecasting INPC Mexico")
     print(f"Inicio: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 60)
+
+    # Atajo: solo reconstruir métricas sin re-estimar
+    if args.rebuild_metrics:
+        print("[fit_soc] Reconstruyendo all_metrics.parquet desde parquets existentes...")
+        rebuild_metrics_from_parquets()
+        print("[fit_soc] Listo. Reinicia el dashboard para ver los cambios.")
+        return
 
     # Opcional: actualizar macro
     if args.update_data:

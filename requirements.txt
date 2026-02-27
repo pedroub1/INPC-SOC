@@ -1,10 +1,28 @@
+# ============================================================
+# Dashboard INPC + SOC — dependencias completas
+# ============================================================
+
+# --- Streamlit (app.py) ---
 streamlit>=1.30
+statsmodels
+pmdarima
+
+# --- Redes Neuronales (fit_nn.py / app.py) ---
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+scikit-learn
+joblib
+
+# --- SOC Dash (soc/dash_app.py) ---
+dash>=2.14
+dash-bootstrap-components>=1.5
+PyWavelets
+
+# --- Compartidas ---
 pandas
 numpy
 plotly
-statsmodels
-pmdarima
-scikit-learn
-joblib
---extra-index-url https://download.pytorch.org/whl/cpu
-torch
+openpyxl
+
+# --- Opcional: WTI desde FRED (soc/fetch_macro.py) ---
+# fredapi

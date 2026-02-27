@@ -1,0 +1,23 @@
+# ============================================================
+# SOC Dashboard — dependencias de produccion (sin torch/streamlit)
+# ============================================================
+
+# --- Servidor WSGI ---
+gunicorn>=21.2
+
+# --- Dash app ---
+dash>=2.14
+dash-bootstrap-components>=1.5
+
+# --- Datos y modelos ---
+pandas
+numpy
+plotly
+openpyxl
+statsmodels
+scikit-learn
+pyarrow
+PyWavelets
+
+# --- Opcional: WTI desde FRED ---
+# fredapi

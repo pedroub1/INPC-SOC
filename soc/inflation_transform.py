@@ -1,15 +1,19 @@
 """
-inflation_transform.py – Transforma niveles de precios en inflación anualizada.
+inflation_transform.py – Transforma niveles de precios en variacion % simple.
 
-π^h_t = (1200 / h) * ln(P_t / P_{t-h})
+Formula: π^h_t = (P_t / P_{t-h} - 1) * 100
+
+Esto replica la forma en que INEGI/Banxico reportan la inflacion en Mexico:
+  h=1  → variacion % mensual        (ej. 0.35%)
+  h=6  → variacion % acumulada 6m   (ej. 2.10%)
+  h=12 → variacion % anual          (ej. 4.21%)
 """
-import numpy as np
 import pandas as pd
 
 
 def compute_inflation(price_level: pd.Series, h: int) -> pd.Series:
     """
-    Calcula inflación anualizada a horizonte h meses.
+    Calcula la variacion % simple del nivel de precios a h meses.
 
     Parameters
     ----------
@@ -21,10 +25,10 @@ def compute_inflation(price_level: pd.Series, h: int) -> pd.Series:
     Returns
     -------
     pd.Series
-        Inflación anualizada: π^h_t = (1200/h) * ln(P_t / P_{t-h}).
-        Los primeros h valores serán NaN.
+        Variacion porcentual: (P_t / P_{t-h} - 1) * 100.
+        Los primeros h valores seran NaN.
     """
-    return (1200.0 / h) * np.log(price_level / price_level.shift(h))
+    return (price_level / price_level.shift(h) - 1.0) * 100.0
 
 
 def compute_all_inflation(df_inpc: pd.DataFrame, horizons: list[int]) -> dict:

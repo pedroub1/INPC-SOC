@@ -1,17 +1,17 @@
 # Secretos
 .env
+.streamlit/secrets.toml
 
 # Python
 *.pyc
 __pycache__/
 
-# Resultados computados (regenerar con fit_soc.py)
-data/soc_results/forecasts/
-data/soc_results/components/
-
-# Modelos neuronales binarios
+# Modelos neuronales (solo app Streamlit, no necesarios para SOC)
 data/nn_models/
 
 # IDEs
 .vscode/
 .idea/
+
+# Los parquets SOC (data/soc_results/) SI van en git — la app los necesita en produccion
+# Para regenerarlos: python -m soc.fit_soc --workers 4
