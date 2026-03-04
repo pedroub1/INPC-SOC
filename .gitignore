@@ -13,5 +13,6 @@ data/nn_models/
 .vscode/
 .idea/
 
-# Los parquets SOC (data/soc_results/) SI van en git — la app los necesita en produccion
+# Los parquets SOC SI van en git — la app los necesita en produccion
 # Para regenerarlos: python -m soc.fit_soc --workers 4
+# Para US: python -m soc_us.fit_soc_us --workers 4

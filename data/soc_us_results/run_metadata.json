@@ -1,0 +1,15 @@
+{
+  "run_date": "2026-03-03T18:53:19.195735",
+  "series": [
+    "CORE_PCE"
+  ],
+  "horizons": [
+    1,
+    6,
+    12
+  ],
+  "oos_start": "2000-01-01",
+  "n_tasks": 3,
+  "n_ok": 3,
+  "n_error": 0
+}
