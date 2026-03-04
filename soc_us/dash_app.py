@@ -95,7 +95,8 @@ app = dash.Dash(
     external_stylesheets=[dbc.themes.FLATLY],
     title="SOC - US CPI/PCE Forecast",
     suppress_callback_exceptions=True,
-    requests_pathname_prefix="/us/",
+    requests_pathname_prefix="/us/",   # el browser/JS usa /us/_dash-*
+    routes_pathname_prefix="/",         # Flask ve la ruta ya sin /us/ (lo quitó DispatcherMiddleware)
 )
 server = app.server
 
