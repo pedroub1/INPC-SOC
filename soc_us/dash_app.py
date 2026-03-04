@@ -95,6 +95,7 @@ app = dash.Dash(
     external_stylesheets=[dbc.themes.FLATLY],
     title="SOC - US CPI/PCE Forecast",
     suppress_callback_exceptions=True,
+    requests_pathname_prefix="/us/",
 )
 server = app.server
 
